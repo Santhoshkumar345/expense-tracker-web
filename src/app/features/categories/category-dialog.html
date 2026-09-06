@@ -1,0 +1,37 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Edit category' : 'Add category' }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <mat-dialog-content>
+    @if (!isEdit) {
+      <mat-button-toggle-group formControlName="type" class="full-width type-toggle">
+        <mat-button-toggle value="Expense">Expense</mat-button-toggle>
+        <mat-button-toggle value="Income">Income</mat-button-toggle>
+      </mat-button-toggle-group>
+    }
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" />
+    </mat-form-field>
+
+    <p class="swatch-label">Color</p>
+    <div class="swatches">
+      @for (c of palette; track c) {
+        <button
+          type="button"
+          class="swatch"
+          [style.background]="c"
+          [class.selected]="form.controls.color.value === c"
+          (click)="selectColor(c)"
+        ></button>
+      }
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="cancel()">Cancel</button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
+      {{ isEdit ? 'Save' : 'Add' }}
+    </button>
+  </mat-dialog-actions>
+</form>

@@ -1,4 +1,19 @@
-# ExpenseTrackerWeb
+# Expense Tracker Web
+
+Angular (v21) frontend for the personal expense tracker: dashboard with balance carried forward from the previous month, category-wise spending, a transactions ledger, and daily/weekly/monthly analysis. Uses Angular Material and Chart.js.
+
+## Configuration
+
+API base URL lives in `src/environments/`:
+
+- `environment.development.ts` — used by `ng serve`, points at `http://localhost:5299/api` (the API's local dev port).
+- `environment.ts` — used by production builds. **Update `apiUrl` to your deployed API's URL before building for production.**
+
+The API must allow this app's origin in its CORS config (`Cors:AllowedOrigins` in the API's settings).
+
+## Not yet implemented
+
+Budgets, recurring transactions, receipt attachments, CSV import/export, tags, savings goals, dark mode — see the project plan for the full feature list. These were scoped out of this pass to ship a working core (auth, ledger, categories, dashboard, analysis) first.
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.7.
 

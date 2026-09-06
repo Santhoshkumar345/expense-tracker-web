@@ -1,0 +1,29 @@
+<mat-sidenav-container class="shell">
+  <mat-sidenav mode="side" opened class="sidenav">
+    <div class="brand">
+      <mat-icon>account_balance_wallet</mat-icon>
+      <span>Expense Tracker</span>
+    </div>
+    <mat-nav-list>
+      @for (item of navItems; track item.path) {
+        <a mat-list-item [routerLink]="item.path" routerLinkActive="active-link">
+          <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+          <span matListItemTitle>{{ item.label }}</span>
+        </a>
+      }
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <mat-toolbar color="primary" class="toolbar">
+      <span class="spacer"></span>
+      <span class="user">{{ auth.displayName() }}</span>
+      <button mat-icon-button (click)="logout()" aria-label="Logout" title="Logout">
+        <mat-icon>logout</mat-icon>
+      </button>
+    </mat-toolbar>
+    <main class="content">
+      <router-outlet></router-outlet>
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

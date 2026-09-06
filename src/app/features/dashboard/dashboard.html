@@ -1,0 +1,74 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Dashboard</h1>
+    <div class="period-picker">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Month</mat-label>
+        <mat-select [(ngModel)]="month" (selectionChange)="onPeriodChange()">
+          @for (name of monthNames; track name; let i = $index) {
+            <mat-option [value]="i + 1">{{ name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Year</mat-label>
+        <mat-select [(ngModel)]="year" (selectionChange)="onPeriodChange()">
+          @for (y of years; track y) {
+            <mat-option [value]="y">{{ y }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="loading"><mat-spinner></mat-spinner></div>
+  } @else if (summary(); as s) {
+    <div class="summary-grid">
+      <mat-card class="summary-card">
+        <span class="label">Opening balance</span>
+        <span class="value">{{ s.openingBalance | number: '1.2-2' }}</span>
+        <span class="hint">carried from previous month</span>
+      </mat-card>
+      <mat-card class="summary-card income">
+        <span class="label">Income</span>
+        <span class="value">{{ s.totalIncome | number: '1.2-2' }}</span>
+      </mat-card>
+      <mat-card class="summary-card expense">
+        <span class="label">Expense</span>
+        <span class="value">{{ s.totalExpense | number: '1.2-2' }}</span>
+      </mat-card>
+      <mat-card class="summary-card closing">
+        <span class="label">Closing balance</span>
+        <span class="value">{{ s.closingBalance | number: '1.2-2' }}</span>
+        <span class="hint">{{ s.transactionCount }} transactions this month</span>
+      </mat-card>
+    </div>
+
+    <div class="charts-grid">
+      <mat-card class="chart-card">
+        <h3>Spending by category</h3>
+        @if (donutSlices.length) {
+          <app-donut-chart [slices]="donutSlices"></app-donut-chart>
+        } @else {
+          <p class="empty">No expenses recorded this month yet.</p>
+        }
+      </mat-card>
+      <mat-card class="chart-card">
+        <h3>Last 6 months</h3>
+        <app-trend-chart [points]="trend()"></app-trend-chart>
+      </mat-card>
+    </div>
+
+    <div class="quick-links">
+      <a mat-stroked-button routerLink="/ledger">
+        <mat-icon>add</mat-icon>
+        Add a transaction
+      </a>
+      <a mat-stroked-button routerLink="/analysis">
+        <mat-icon>insights</mat-icon>
+        View detailed analysis
+      </a>
+    </div>
+  }
+</div>

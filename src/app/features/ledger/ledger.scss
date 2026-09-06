@@ -1,0 +1,63 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  h1 {
+    margin: 0;
+  }
+
+  button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+
+  mat-form-field {
+    width: 160px;
+  }
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  padding: 3rem;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.category-chip {
+  color: white;
+  font-size: 0.75rem;
+}
+
+td.income {
+  color: #22c55e;
+  font-weight: 600;
+}
+
+td.expense {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.empty {
+  text-align: center;
+  opacity: 0.6;
+  padding: 2rem 0;
+}

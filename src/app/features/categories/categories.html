@@ -1,0 +1,95 @@
+<div class="page">
+  <h1>Categories</h1>
+
+  @if (loading()) {
+    <div class="loading"><mat-spinner></mat-spinner></div>
+  } @else {
+    <div class="columns">
+      <section class="column">
+        <div class="column-header">
+          <h2>Expense categories</h2>
+          <button mat-stroked-button (click)="addCategory('Expense')">
+            <mat-icon>add</mat-icon>
+            Add
+          </button>
+        </div>
+        <mat-accordion>
+          @for (c of expenseCategories; track c.id) {
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <span class="dot" [style.background]="c.color"></span>
+                  {{ c.name }}
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+
+              <mat-chip-set class="subcats">
+                @for (s of c.subCategories; track s.id) {
+                  <mat-chip (removed)="deleteSubCategory(s.id)">
+                    {{ s.name }}
+                    <button matChipRemove><mat-icon>cancel</mat-icon></button>
+                  </mat-chip>
+                }
+              </mat-chip-set>
+
+              <div class="add-subcat">
+                <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                  <input matInput placeholder="New sub-category" [(ngModel)]="newSubCategoryName[c.id]" (keyup.enter)="addSubCategory(c)" />
+                </mat-form-field>
+                <button mat-icon-button (click)="addSubCategory(c)"><mat-icon>add</mat-icon></button>
+              </div>
+
+              <div class="panel-actions">
+                <button mat-button (click)="editCategory(c)">Edit</button>
+                <button mat-button color="warn" (click)="deleteCategory(c)">Delete</button>
+              </div>
+            </mat-expansion-panel>
+          }
+        </mat-accordion>
+      </section>
+
+      <section class="column">
+        <div class="column-header">
+          <h2>Income categories</h2>
+          <button mat-stroked-button (click)="addCategory('Income')">
+            <mat-icon>add</mat-icon>
+            Add
+          </button>
+        </div>
+        <mat-accordion>
+          @for (c of incomeCategories; track c.id) {
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <span class="dot" [style.background]="c.color"></span>
+                  {{ c.name }}
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+
+              <mat-chip-set class="subcats">
+                @for (s of c.subCategories; track s.id) {
+                  <mat-chip (removed)="deleteSubCategory(s.id)">
+                    {{ s.name }}
+                    <button matChipRemove><mat-icon>cancel</mat-icon></button>
+                  </mat-chip>
+                }
+              </mat-chip-set>
+
+              <div class="add-subcat">
+                <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                  <input matInput placeholder="New sub-category" [(ngModel)]="newSubCategoryName[c.id]" (keyup.enter)="addSubCategory(c)" />
+                </mat-form-field>
+                <button mat-icon-button (click)="addSubCategory(c)"><mat-icon>add</mat-icon></button>
+              </div>
+
+              <div class="panel-actions">
+                <button mat-button (click)="editCategory(c)">Edit</button>
+                <button mat-button color="warn" (click)="deleteCategory(c)">Delete</button>
+              </div>
+            </mat-expansion-panel>
+          }
+        </mat-accordion>
+      </section>
+    </div>
+  }
+</div>

@@ -1,0 +1,75 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+
+  mat-form-field {
+    width: 160px;
+  }
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  padding: 3rem;
+}
+
+.summary-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1rem 1.25rem;
+
+  .label {
+    font-size: 0.8rem;
+    opacity: 0.7;
+  }
+
+  .value {
+    font-size: 1.4rem;
+    font-weight: 600;
+  }
+
+  &.income .value {
+    color: #22c55e;
+  }
+
+  &.expense .value {
+    color: #ef4444;
+  }
+}
+
+.chart-card {
+  padding: 1.25rem;
+}
+
+.full-width {
+  width: 100%;
+}
+
+td.positive {
+  color: #22c55e;
+}
+
+td.negative {
+  color: #ef4444;
+}
+
+.empty {
+  text-align: center;
+  opacity: 0.6;
+  padding: 2rem 0;
+}
