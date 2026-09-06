@@ -20,6 +20,7 @@ import { Category } from '../../core/models/category.model';
 import { Transaction, TransactionCreate, TransactionQuery } from '../../core/models/transaction.model';
 import { Tag } from '../../core/models/tag.model';
 import { TransactionDialog, TransactionDialogData } from './transaction-dialog';
+import { toLocalIsoDate } from '../../shared/util/date-utils';
 
 @Component({
   selector: 'app-ledger',
@@ -53,6 +54,7 @@ export class Ledger implements OnInit {
 
   readonly displayedColumns = ['date', 'category', 'note', 'tags', 'amount', 'actions'];
   readonly categories = signal<Category[]>([]);
+  readonly categoriesLoaded = signal(false);
   readonly tags = signal<Tag[]>([]);
   readonly transactions = signal<Transaction[]>([]);
   readonly totalCount = signal(0);
@@ -72,7 +74,10 @@ export class Ledger implements OnInit {
   };
 
   ngOnInit(): void {
-    this.categoryService.getAll().subscribe((categories) => this.categories.set(categories));
+    this.categoryService.getAll().subscribe((categories) => {
+      this.categories.set(categories);
+      this.categoriesLoaded.set(true);
+    });
     this.tagService.getAll().subscribe((tags) => this.tags.set(tags));
     this.load();
   }
@@ -111,7 +116,7 @@ export class Ledger implements OnInit {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `transactions-${new Date().toISOString().slice(0, 10)}.csv`;
+      a.download = `transactions-${toLocalIsoDate(new Date())}.csv`;
       a.click();
       window.URL.revokeObjectURL(url);
     });
@@ -146,6 +151,8 @@ export class Ledger implements OnInit {
   }
 
   private openDialog(transaction: Transaction | null): void {
+    if (!this.categoriesLoaded()) return;
+
     const ref = this.dialog.open<TransactionDialog, TransactionDialogData, TransactionCreate>(TransactionDialog, {
       width: '420px',
       maxWidth: '95vw',

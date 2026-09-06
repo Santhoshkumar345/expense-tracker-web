@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { SavingsGoal, SavingsGoalCreate } from '../../core/models/savings-goal.model';
+import { parseLocalDate, toLocalIsoDate } from '../../shared/util/date-utils';
 
 export interface GoalDialogData {
   goal: SavingsGoal | null;
@@ -37,7 +38,7 @@ export class GoalDialog {
   readonly form = this.fb.group({
     name: [this.data.goal?.name ?? '', Validators.required],
     targetAmount: [this.data.goal?.targetAmount ?? null, [Validators.required, Validators.min(0.01)]],
-    targetDate: [this.data.goal?.targetDate ? new Date(this.data.goal.targetDate) : null],
+    targetDate: [this.data.goal?.targetDate ? parseLocalDate(this.data.goal.targetDate) : null],
   });
 
   submit(): void {
@@ -48,7 +49,7 @@ export class GoalDialog {
     this.dialogRef.close({
       name: raw.name!,
       targetAmount: Number(raw.targetAmount),
-      targetDate: targetDate ? targetDate.toISOString().slice(0, 10) : null,
+      targetDate: targetDate ? toLocalIsoDate(targetDate) : null,
     });
   }
 

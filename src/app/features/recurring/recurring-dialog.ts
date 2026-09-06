@@ -10,6 +10,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { Category } from '../../core/models/category.model';
 import { RecurringTransaction, RecurringTransactionCreate } from '../../core/models/recurring-transaction.model';
+import { parseLocalDate, toLocalIsoDate } from '../../shared/util/date-utils';
 
 export interface RecurringDialogData {
   categories: Category[];
@@ -46,8 +47,8 @@ export class RecurringDialog {
     categoryId: [this.data.recurring?.categoryId ?? null, Validators.required],
     subCategoryId: [this.data.recurring?.subCategoryId ?? null],
     frequency: [this.data.recurring?.frequency ?? ('Monthly' as 'Weekly' | 'Monthly'), Validators.required],
-    startDate: [this.data.recurring ? new Date(this.data.recurring.startDate) : new Date(), Validators.required],
-    endDate: [this.data.recurring?.endDate ? new Date(this.data.recurring.endDate) : null],
+    startDate: [this.data.recurring ? parseLocalDate(this.data.recurring.startDate) : new Date(), Validators.required],
+    endDate: [this.data.recurring?.endDate ? parseLocalDate(this.data.recurring.endDate) : null],
     note: [this.data.recurring?.note ?? ''],
     paymentMethod: [this.data.recurring?.paymentMethod ?? ''],
   });
@@ -86,8 +87,8 @@ export class RecurringDialog {
       categoryId: Number(raw.categoryId),
       subCategoryId: raw.subCategoryId ? Number(raw.subCategoryId) : null,
       frequency: raw.frequency as 'Weekly' | 'Monthly',
-      startDate: startDate.toISOString().slice(0, 10),
-      endDate: endDate ? endDate.toISOString().slice(0, 10) : null,
+      startDate: toLocalIsoDate(startDate),
+      endDate: endDate ? toLocalIsoDate(endDate) : null,
       note: raw.note || null,
       paymentMethod: raw.paymentMethod || null,
     });

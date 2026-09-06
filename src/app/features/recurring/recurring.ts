@@ -77,6 +77,8 @@ export class Recurring implements OnInit {
   }
 
   private openDialog(item: RecurringTransaction | null): void {
+    if (this.loading()) return;
+
     const ref = this.dialog.open<RecurringDialog, RecurringDialogData, RecurringTransactionCreate>(RecurringDialog, {
       width: '440px',
       maxWidth: '95vw',

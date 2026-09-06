@@ -13,6 +13,7 @@ import { DashboardService } from '../../core/services/dashboard.service';
 import { MonthSummary, CategoryBreakdownItem, TrendPoint } from '../../core/models/dashboard.model';
 import { DonutChart, DonutChartSlice } from '../../shared/charts/donut-chart';
 import { TrendChart } from '../../shared/charts/trend-chart';
+import { toLocalIsoDate } from '../../shared/util/date-utils';
 
 const MONTH_NAMES = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -67,6 +68,32 @@ export class Dashboard implements OnInit {
     return this.breakdown().map((b) => ({ label: b.categoryName, value: b.amount, color: b.color }));
   }
 
+  get incomeDelta(): number | null {
+    return this.percentDelta((p) => p.income);
+  }
+
+  get expenseDelta(): number | null {
+    return this.percentDelta((p) => p.expense);
+  }
+
+  private percentDelta(selector: (p: TrendPoint) => number): number | null {
+    const current = this.trendPointFor(this.year, this.month);
+    const prevDate = new Date(this.year, this.month - 2, 1);
+    const previous = this.trendPointFor(prevDate.getFullYear(), prevDate.getMonth() + 1);
+    if (!current || !previous) return null;
+
+    const currentValue = selector(current);
+    const previousValue = selector(previous);
+    if (previousValue === 0) return null;
+
+    return ((currentValue - previousValue) / previousValue) * 100;
+  }
+
+  private trendPointFor(year: number, month: number): TrendPoint | undefined {
+    const iso = toLocalIsoDate(new Date(year, month - 1, 1));
+    return this.trend().find((p) => p.periodStart === iso);
+  }
+
   private load(): void {
     this.loading.set(true);
 
@@ -90,15 +117,11 @@ export class Dashboard implements OnInit {
 
   private monthsAgoIso(count: number): string {
     const d = new Date(this.year, this.month - 1 - count, 1);
-    return this.toIso(d);
+    return toLocalIsoDate(d);
   }
 
   private endOfMonthIso(year: number, month: number): string {
     const d = new Date(year, month, 0);
-    return this.toIso(d);
-  }
-
-  private toIso(d: Date): string {
-    return d.toISOString().slice(0, 10);
+    return toLocalIsoDate(d);
   }
 }

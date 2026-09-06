@@ -1,7 +1,7 @@
 <div class="page">
   <div class="page-header">
     <h1>Recurring Transactions</h1>
-    <button mat-flat-button color="primary" (click)="openAddDialog()">
+    <button mat-flat-button color="primary" (click)="openAddDialog()" [disabled]="loading()">
       <mat-icon>add</mat-icon>
       Add recurring
     </button>

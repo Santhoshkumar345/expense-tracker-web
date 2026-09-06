@@ -11,10 +11,7 @@ import { MatCardModule } from '@angular/material/card';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { TrendGranularity, TrendPoint } from '../../core/models/dashboard.model';
 import { TrendChart } from '../../shared/charts/trend-chart';
-
-function toIso(d: Date): string {
-  return d.toISOString().slice(0, 10);
-}
+import { toLocalIsoDate } from '../../shared/util/date-utils';
 
 @Component({
   selector: 'app-analysis',
@@ -36,8 +33,8 @@ function toIso(d: Date): string {
 })
 export class Analysis implements OnInit {
   granularity: TrendGranularity = 'Daily';
-  from = toIso(this.defaultFrom());
-  to = toIso(new Date());
+  from = toLocalIsoDate(this.defaultFrom());
+  to = toLocalIsoDate(new Date());
 
   readonly loading = signal(true);
   readonly points = signal<TrendPoint[]>([]);
@@ -50,9 +47,9 @@ export class Analysis implements OnInit {
   }
 
   onGranularityChange(): void {
-    if (this.granularity === 'Daily') this.from = toIso(this.addDays(new Date(), -30));
-    if (this.granularity === 'Weekly') this.from = toIso(this.addDays(new Date(), -84));
-    if (this.granularity === 'Monthly') this.from = toIso(this.addDays(new Date(), -365));
+    if (this.granularity === 'Daily') this.from = toLocalIsoDate(this.addDays(new Date(), -30));
+    if (this.granularity === 'Weekly') this.from = toLocalIsoDate(this.addDays(new Date(), -84));
+    if (this.granularity === 'Monthly') this.from = toLocalIsoDate(this.addDays(new Date(), -365));
     this.load();
   }
 

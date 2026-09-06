@@ -26,28 +26,52 @@
   } @else if (summary(); as s) {
     <div class="summary-grid">
       <mat-card class="summary-card opening">
-        <span class="label">Opening balance</span>
-        <span class="value">{{ s.openingBalance | number: '1.2-2' }}</span>
-        <span class="hint">carried from previous month</span>
+        <div class="card-icon"><mat-icon>account_balance_wallet</mat-icon></div>
+        <div class="card-body">
+          <span class="label">Opening balance</span>
+          <span class="value">{{ s.openingBalance | number: '1.2-2' }}</span>
+          <span class="hint">carried from previous month</span>
+        </div>
       </mat-card>
       <mat-card class="summary-card income">
-        <span class="label">Income</span>
-        <span class="value">{{ s.totalIncome | number: '1.2-2' }}</span>
+        <div class="card-icon"><mat-icon>trending_up</mat-icon></div>
+        <div class="card-body">
+          <span class="label">Income</span>
+          <span class="value">{{ s.totalIncome | number: '1.2-2' }}</span>
+          @if (incomeDelta !== null) {
+            <span class="delta" [class.positive]="incomeDelta! >= 0" [class.negative]="incomeDelta! < 0">
+              <mat-icon>{{ incomeDelta! >= 0 ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>
+              {{ incomeDelta! | number: '1.0-0' }}% vs last month
+            </span>
+          }
+        </div>
       </mat-card>
       <mat-card class="summary-card expense">
-        <span class="label">Expense</span>
-        <span class="value">{{ s.totalExpense | number: '1.2-2' }}</span>
+        <div class="card-icon"><mat-icon>trending_down</mat-icon></div>
+        <div class="card-body">
+          <span class="label">Expense</span>
+          <span class="value">{{ s.totalExpense | number: '1.2-2' }}</span>
+          @if (expenseDelta !== null) {
+            <span class="delta" [class.positive]="expenseDelta! <= 0" [class.negative]="expenseDelta! > 0">
+              <mat-icon>{{ expenseDelta! >= 0 ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>
+              {{ expenseDelta! | number: '1.0-0' }}% vs last month
+            </span>
+          }
+        </div>
       </mat-card>
       <mat-card class="summary-card closing">
-        <span class="label">Closing balance</span>
-        <span class="value">{{ s.closingBalance | number: '1.2-2' }}</span>
-        <span class="hint">{{ s.transactionCount }} transactions this month</span>
+        <div class="card-icon"><mat-icon>account_balance</mat-icon></div>
+        <div class="card-body">
+          <span class="label">Closing balance</span>
+          <span class="value">{{ s.closingBalance | number: '1.2-2' }}</span>
+          <span class="hint">{{ s.transactionCount }} transactions this month</span>
+        </div>
       </mat-card>
     </div>
 
     <div class="charts-grid">
       <mat-card class="chart-card">
-        <h3>Spending by category</h3>
+        <h3><mat-icon>donut_large</mat-icon>Spending by category</h3>
         @if (donutSlices.length) {
           <app-donut-chart [slices]="donutSlices"></app-donut-chart>
         } @else {
@@ -55,7 +79,7 @@
         }
       </mat-card>
       <mat-card class="chart-card">
-        <h3>Last 6 months</h3>
+        <h3><mat-icon>show_chart</mat-icon>Last 6 months</h3>
         <app-trend-chart [points]="trend()"></app-trend-chart>
       </mat-card>
     </div>

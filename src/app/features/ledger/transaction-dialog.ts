@@ -12,6 +12,7 @@ import { MatChipsModule, MatChipInputEvent } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { Category } from '../../core/models/category.model';
 import { Transaction, TransactionCreate } from '../../core/models/transaction.model';
+import { parseLocalDate, toLocalIsoDate } from '../../shared/util/date-utils';
 
 export interface TransactionDialogData {
   categories: Category[];
@@ -46,7 +47,7 @@ export class TransactionDialog {
 
   readonly form = this.fb.group({
     type: [this.data.transaction?.type ?? ('Expense' as 'Income' | 'Expense'), Validators.required],
-    date: [this.data.transaction ? new Date(this.data.transaction.date) : new Date(), Validators.required],
+    date: [this.data.transaction ? parseLocalDate(this.data.transaction.date) : new Date(), Validators.required],
     amount: [this.data.transaction?.amount ?? null, [Validators.required, Validators.min(0.01)]],
     categoryId: [this.data.transaction?.categoryId ?? null, Validators.required],
     subCategoryId: [this.data.transaction?.subCategoryId ?? null],
@@ -108,7 +109,7 @@ export class TransactionDialog {
 
     const result: TransactionCreate = {
       type: raw.type as 'Income' | 'Expense',
-      date: date.toISOString().slice(0, 10),
+      date: toLocalIsoDate(date),
       amount: Number(raw.amount),
       categoryId: Number(raw.categoryId),
       subCategoryId: raw.subCategoryId ? Number(raw.subCategoryId) : null,
