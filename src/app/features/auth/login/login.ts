@@ -46,7 +46,17 @@ export class Login {
     this.errorMessage.set(null);
 
     this.auth.login(this.form.getRawValue() as { email: string; password: string }).subscribe({
-      next: () => this.router.navigate(['/dashboard']),
+      next: () => {
+        this.router.navigate(['/dashboard']).then((navigated) => {
+          if (!navigated) {
+            this.loading.set(false);
+            this.errorMessage.set('Signed in, but could not open the dashboard. Please try again.');
+          }
+        }).catch(() => {
+          this.loading.set(false);
+          this.errorMessage.set('Something went wrong loading the app. Please refresh the page and try again.');
+        });
+      },
       error: (err: HttpErrorResponse) => {
         this.loading.set(false);
         this.errorMessage.set(err.error?.error ?? 'Login failed. Please check your credentials.');

@@ -49,7 +49,17 @@ export class Register {
     this.auth
       .register(this.form.getRawValue() as { displayName: string; email: string; password: string })
       .subscribe({
-        next: () => this.router.navigate(['/dashboard']),
+        next: () => {
+          this.router.navigate(['/dashboard']).then((navigated) => {
+            if (!navigated) {
+              this.loading.set(false);
+              this.errorMessage.set('Registered, but could not open the dashboard. Please try signing in.');
+            }
+          }).catch(() => {
+            this.loading.set(false);
+            this.errorMessage.set('Something went wrong loading the app. Please refresh the page and try again.');
+          });
+        },
         error: (err: HttpErrorResponse) => {
           this.loading.set(false);
           const errors: string[] = err.error?.errors ?? [];
