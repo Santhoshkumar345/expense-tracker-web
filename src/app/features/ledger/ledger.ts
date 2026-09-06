@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, inject, signal } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
@@ -12,10 +12,13 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { CategoryService } from '../../core/services/category.service';
 import { TransactionService } from '../../core/services/transaction.service';
+import { TagService } from '../../core/services/tag.service';
 import { Category } from '../../core/models/category.model';
 import { Transaction, TransactionCreate, TransactionQuery } from '../../core/models/transaction.model';
+import { Tag } from '../../core/models/tag.model';
 import { TransactionDialog, TransactionDialogData } from './transaction-dialog';
 
 @Component({
@@ -40,31 +43,37 @@ import { TransactionDialog, TransactionDialogData } from './transaction-dialog';
   styleUrl: './ledger.scss',
 })
 export class Ledger implements OnInit {
-  readonly displayedColumns = ['date', 'category', 'note', 'amount', 'actions'];
+  private readonly categoryService = inject(CategoryService);
+  private readonly transactionService = inject(TransactionService);
+  private readonly tagService = inject(TagService);
+  private readonly dialog = inject(MatDialog);
+  private readonly snackBar = inject(MatSnackBar);
+
+  @ViewChild('importInput') importInput!: ElementRef<HTMLInputElement>;
+
+  readonly displayedColumns = ['date', 'category', 'note', 'tags', 'amount', 'actions'];
   readonly categories = signal<Category[]>([]);
+  readonly tags = signal<Tag[]>([]);
   readonly transactions = signal<Transaction[]>([]);
   readonly totalCount = signal(0);
   readonly loading = signal(true);
+  readonly importing = signal(false);
 
   page = 0;
   pageSize = 20;
 
-  filters: { from: string; to: string; categoryId: number | null; type: 'Income' | 'Expense' | null; search: string } = {
+  filters: { from: string; to: string; categoryId: number | null; type: 'Income' | 'Expense' | null; search: string; tag: string | null } = {
     from: '',
     to: '',
     categoryId: null,
     type: null,
     search: '',
+    tag: null,
   };
-
-  constructor(
-    private readonly categoryService: CategoryService,
-    private readonly transactionService: TransactionService,
-    private readonly dialog: MatDialog,
-  ) {}
 
   ngOnInit(): void {
     this.categoryService.getAll().subscribe((categories) => this.categories.set(categories));
+    this.tagService.getAll().subscribe((tags) => this.tags.set(tags));
     this.load();
   }
 
@@ -74,7 +83,7 @@ export class Ledger implements OnInit {
   }
 
   clearFilters(): void {
-    this.filters = { from: '', to: '', categoryId: null, type: null, search: '' };
+    this.filters = { from: '', to: '', categoryId: null, type: null, search: '', tag: null };
     this.applyFilters();
   }
 
@@ -97,6 +106,45 @@ export class Ledger implements OnInit {
     this.transactionService.delete(transaction.id).subscribe(() => this.load());
   }
 
+  exportCsv(): void {
+    this.transactionService.exportCsv(this.filters.from || undefined, this.filters.to || undefined).subscribe((blob) => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `transactions-${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
+  }
+
+  triggerImport(): void {
+    this.importInput.nativeElement.click();
+  }
+
+  onImportFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    this.importing.set(true);
+    this.transactionService.importCsv(file).subscribe({
+      next: (result) => {
+        this.importing.set(false);
+        input.value = '';
+        const message = `Imported ${result.importedCount} transaction(s)` + (result.skippedCount ? `, skipped ${result.skippedCount}` : '');
+        this.snackBar.open(message, 'Dismiss', { duration: 5000 });
+        this.categoryService.getAll().subscribe((categories) => this.categories.set(categories));
+        this.tagService.getAll().subscribe((tags) => this.tags.set(tags));
+        this.load();
+      },
+      error: () => {
+        this.importing.set(false);
+        input.value = '';
+        this.snackBar.open('Import failed. Check the file format and try again.', 'Dismiss', { duration: 5000 });
+      },
+    });
+  }
+
   private openDialog(transaction: Transaction | null): void {
     const ref = this.dialog.open<TransactionDialog, TransactionDialogData, TransactionCreate>(TransactionDialog, {
       width: '420px',
@@ -108,7 +156,10 @@ export class Ledger implements OnInit {
       const request = transaction
         ? this.transactionService.update(transaction.id, result)
         : this.transactionService.create(result);
-      request.subscribe(() => this.load());
+      request.subscribe(() => {
+        this.tagService.getAll().subscribe((tags) => this.tags.set(tags));
+        this.load();
+      });
     });
   }
 
@@ -120,6 +171,7 @@ export class Ledger implements OnInit {
       categoryId: this.filters.categoryId ?? undefined,
       type: this.filters.type ?? undefined,
       search: this.filters.search || undefined,
+      tag: this.filters.tag ?? undefined,
       page: this.page + 1,
       pageSize: this.pageSize,
     };

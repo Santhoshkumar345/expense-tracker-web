@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>{{ isEdit ? 'Edit transaction' : 'Add transaction' }}</h2>
+<h2 mat-dialog-title>{{ isEdit ? 'Edit recurring transaction' : 'Add recurring transaction' }}</h2>
 
 <form [formGroup]="form" (ngSubmit)="submit()">
   <mat-dialog-content>
@@ -6,13 +6,6 @@
       <mat-button-toggle value="Expense">Expense</mat-button-toggle>
       <mat-button-toggle value="Income">Income</mat-button-toggle>
     </mat-button-toggle-group>
-
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Date</mat-label>
-      <input matInput [matDatepicker]="picker" formControlName="date" />
-      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Amount</mat-label>
@@ -41,6 +34,28 @@
     }
 
     <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Repeats</mat-label>
+      <mat-select formControlName="frequency">
+        <mat-option value="Weekly">Weekly</mat-option>
+        <mat-option value="Monthly">Monthly</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Starts on</mat-label>
+      <input matInput [matDatepicker]="startPicker" formControlName="startDate" />
+      <mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
+      <mat-datepicker #startPicker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Ends on (optional)</mat-label>
+      <input matInput [matDatepicker]="endPicker" formControlName="endDate" />
+      <mat-datepicker-toggle matIconSuffix [for]="endPicker"></mat-datepicker-toggle>
+      <mat-datepicker #endPicker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
       <mat-label>Payment method</mat-label>
       <input matInput formControlName="paymentMethod" placeholder="Cash, Card, UPI..." />
     </mat-form-field>
@@ -48,25 +63,6 @@
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Note</mat-label>
       <input matInput formControlName="note" />
-    </mat-form-field>
-
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Tags</mat-label>
-      <mat-chip-grid #chipGrid>
-        @for (tag of tags(); track tag) {
-          <mat-chip-row (removed)="removeTag(tag)">
-            {{ tag }}
-            <button matChipRemove><mat-icon>cancel</mat-icon></button>
-          </mat-chip-row>
-        }
-      </mat-chip-grid>
-      <input
-        placeholder="Add a tag and press Enter"
-        [matChipInputFor]="chipGrid"
-        [matChipInputSeparatorKeyCodes]="[13, 188]"
-        (matChipInputTokenEnd)="addTag($event)"
-        (keydown)="onTagInputKeydown($event)"
-      />
     </mat-form-field>
   </mat-dialog-content>
 

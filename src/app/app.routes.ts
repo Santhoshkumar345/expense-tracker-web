@@ -33,6 +33,18 @@ export const routes: Routes = [
         path: 'analysis',
         loadComponent: () => import('./features/analysis/analysis').then((m) => m.Analysis),
       },
+      {
+        path: 'budgets',
+        loadComponent: () => import('./features/budgets/budgets').then((m) => m.Budgets),
+      },
+      {
+        path: 'recurring',
+        loadComponent: () => import('./features/recurring/recurring').then((m) => m.Recurring),
+      },
+      {
+        path: 'savings-goals',
+        loadComponent: () => import('./features/savings-goals/savings-goals').then((m) => m.SavingsGoals),
+      },
     ],
   },
   { path: '**', redirectTo: 'dashboard' },

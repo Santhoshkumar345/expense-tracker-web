@@ -42,6 +42,12 @@
   flex-direction: column;
   gap: 0.25rem;
   padding: 1.25rem;
+  border-top: 3px solid var(--mat-sys-outline-variant);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
 
   .label {
     font-size: 0.8rem;
@@ -51,8 +57,8 @@
   }
 
   .value {
-    font-size: 1.6rem;
-    font-weight: 600;
+    font-size: 1.75rem;
+    font-weight: 700;
   }
 
   .hint {
@@ -60,16 +66,32 @@
     opacity: 0.6;
   }
 
+  &.opening {
+    border-top-color: var(--mat-sys-outline);
+  }
+
+  &.income {
+    border-top-color: var(--app-income);
+  }
+
   &.income .value {
-    color: #22c55e;
+    color: var(--app-income);
+  }
+
+  &.expense {
+    border-top-color: var(--app-expense);
   }
 
   &.expense .value {
-    color: #ef4444;
+    color: var(--app-expense);
+  }
+
+  &.closing {
+    border-top-color: var(--mat-sys-primary);
   }
 
   &.closing .value {
-    color: #6366f1;
+    color: var(--mat-sys-primary);
   }
 }
 

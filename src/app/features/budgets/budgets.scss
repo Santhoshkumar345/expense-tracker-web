@@ -1,0 +1,114 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+
+  h1 {
+    margin: 0;
+  }
+}
+
+.period-picker {
+  display: flex;
+  gap: 0.75rem;
+
+  mat-form-field {
+    width: 140px;
+  }
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  padding: 3rem;
+}
+
+.budget-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.budget-card {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.budget-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  .name {
+    flex: 1;
+    font-weight: 600;
+  }
+
+  button {
+    margin-right: -0.5rem;
+  }
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.budget-figures {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  opacity: 0.8;
+
+  .pct {
+    font-weight: 700;
+    opacity: 1;
+  }
+
+  .pct.over {
+    color: var(--app-expense);
+  }
+}
+
+.limit-input {
+  margin-top: 0.25rem;
+}
+
+.add-card {
+  justify-content: flex-start;
+  background: var(--mat-sys-surface-container-low);
+
+  h3 {
+    margin: 0 0 0.25rem;
+  }
+
+  button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    align-self: flex-start;
+  }
+}
+
+.full-width {
+  width: 100%;
+}
+
+.empty {
+  opacity: 0.6;
+  text-align: center;
+  padding: 1rem 0;
+}

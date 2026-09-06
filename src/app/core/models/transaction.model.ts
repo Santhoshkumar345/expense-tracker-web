@@ -12,6 +12,7 @@ export interface Transaction {
   subCategoryName: string | null;
   note: string | null;
   paymentMethod: string | null;
+  tags: string[];
 }
 
 export interface TransactionCreate {
@@ -22,6 +23,7 @@ export interface TransactionCreate {
   subCategoryId: number | null;
   note?: string | null;
   paymentMethod?: string | null;
+  tagNames?: string[];
 }
 
 export interface TransactionQuery {
@@ -30,6 +32,7 @@ export interface TransactionQuery {
   categoryId?: number;
   type?: TransactionType;
   search?: string;
+  tag?: string;
   page?: number;
   pageSize?: number;
 }
@@ -39,4 +42,10 @@ export interface PagedResult<T> {
   totalCount: number;
   page: number;
   pageSize: number;
+}
+
+export interface ImportResult {
+  importedCount: number;
+  skippedCount: number;
+  errors: string[];
 }

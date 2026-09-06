@@ -8,6 +8,8 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatChipsModule, MatChipInputEvent } from '@angular/material/chips';
+import { MatIconModule } from '@angular/material/icon';
 import { Category } from '../../core/models/category.model';
 import { Transaction, TransactionCreate } from '../../core/models/transaction.model';
 
@@ -29,6 +31,8 @@ export interface TransactionDialogData {
     MatButtonModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatChipsModule,
+    MatIconModule,
   ],
   templateUrl: './transaction-dialog.html',
   styleUrl: './transaction-dialog.scss',
@@ -51,6 +55,7 @@ export class TransactionDialog {
   });
 
   readonly selectedType = signal<'Income' | 'Expense'>(this.data.transaction?.type ?? 'Expense');
+  readonly tags = signal<string[]>([...(this.data.transaction?.tags ?? [])]);
 
   constructor() {
     this.form.controls.type.valueChanges.subscribe((value) => {
@@ -71,6 +76,30 @@ export class TransactionDialog {
     return this.filteredCategories.find((c) => c.id === categoryId)?.subCategories ?? [];
   }
 
+  addTag(event: MatChipInputEvent): void {
+    this.addTagValue(event.value);
+    event.chipInput?.clear();
+  }
+
+  onTagInputKeydown(event: KeyboardEvent): void {
+    if (event.key !== 'Enter' && event.key !== ',') return;
+    event.preventDefault();
+    const input = event.target as HTMLInputElement;
+    this.addTagValue(input.value);
+    input.value = '';
+  }
+
+  private addTagValue(value: string | null | undefined): void {
+    const trimmed = (value || '').trim();
+    if (trimmed && !this.tags().some((t) => t.toLowerCase() === trimmed.toLowerCase())) {
+      this.tags.update((tags) => [...tags, trimmed]);
+    }
+  }
+
+  removeTag(tag: string): void {
+    this.tags.update((tags) => tags.filter((t) => t !== tag));
+  }
+
   submit(): void {
     if (this.form.invalid) return;
 
@@ -85,6 +114,7 @@ export class TransactionDialog {
       subCategoryId: raw.subCategoryId ? Number(raw.subCategoryId) : null,
       note: raw.note || null,
       paymentMethod: raw.paymentMethod || null,
+      tagNames: this.tags(),
     };
 
     this.dialogRef.close(result);

@@ -1,0 +1,52 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Savings Goals</h1>
+    <button mat-flat-button color="primary" (click)="openAddDialog()">
+      <mat-icon>add</mat-icon>
+      New goal
+    </button>
+  </div>
+
+  @if (loading()) {
+    <div class="loading"><mat-spinner></mat-spinner></div>
+  } @else {
+    <div class="goal-grid">
+      @for (g of goals(); track g.id) {
+        <mat-card class="goal-card">
+          <div class="goal-head">
+            <mat-icon class="goal-icon">savings</mat-icon>
+            <div class="goal-title">
+              <span class="name">{{ g.name }}</span>
+              @if (g.targetDate) {
+                <span class="target-date">by {{ g.targetDate }}</span>
+              }
+            </div>
+            <button mat-icon-button (click)="deleteGoal(g)" matTooltip="Delete goal">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+
+          <mat-progress-bar mode="determinate" [value]="g.percentageComplete" color="primary"></mat-progress-bar>
+
+          <div class="goal-figures">
+            <span>{{ g.savedAmount | number: '1.2-2' }} of {{ g.targetAmount | number: '1.2-2' }}</span>
+            <span class="pct">{{ g.percentageComplete | number: '1.0-0' }}%</span>
+          </div>
+
+          <div class="goal-actions">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="contribution-input">
+              <mat-label>Add funds</mat-label>
+              <input matInput type="number" step="0.01" [(ngModel)]="contributionAmount[g.id]" />
+            </mat-form-field>
+            <button mat-stroked-button (click)="contribute(g)" [disabled]="!contributionAmount[g.id]">Add</button>
+            <button mat-button (click)="openEditDialog(g)">Edit</button>
+          </div>
+        </mat-card>
+      }
+    </div>
+
+    @if (!goals().length) {
+      <p class="empty">No savings goals yet — set one to start tracking progress toward it.</p>
+    }
+  }
+</div>

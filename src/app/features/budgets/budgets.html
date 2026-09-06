@@ -1,0 +1,79 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Budgets</h1>
+    <div class="period-picker">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Month</mat-label>
+        <mat-select [(ngModel)]="month" (selectionChange)="onPeriodChange()">
+          @for (name of monthNames; track name; let i = $index) {
+            <mat-option [value]="i + 1">{{ name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Year</mat-label>
+        <mat-select [(ngModel)]="year" (selectionChange)="onPeriodChange()">
+          @for (y of years; track y) {
+            <mat-option [value]="y">{{ y }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="loading"><mat-spinner></mat-spinner></div>
+  } @else {
+    <div class="budget-grid">
+      @for (b of budgets(); track b.id) {
+        <mat-card class="budget-card">
+          <div class="budget-head">
+            <span class="dot" [style.background]="b.categoryColor"></span>
+            <span class="name">{{ b.categoryName }}</span>
+            <button mat-icon-button (click)="deleteBudget(b)" matTooltip="Remove budget">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+          <mat-progress-bar mode="determinate" [value]="b.percentageUsed" [color]="barColor(b.percentageUsed)"></mat-progress-bar>
+          <div class="budget-figures">
+            <span>{{ b.spentAmount | number: '1.2-2' }} of {{ b.limitAmount | number: '1.2-2' }}</span>
+            <span class="pct" [class.over]="b.percentageUsed >= 100">{{ b.percentageUsed | number: '1.0-0' }}%</span>
+          </div>
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="limit-input">
+            <mat-label>Change limit</mat-label>
+            <input
+              matInput
+              type="number"
+              [value]="b.limitAmount"
+              (change)="updateLimit(b, $any($event.target).value)"
+            />
+          </mat-form-field>
+        </mat-card>
+      }
+
+      <mat-card class="budget-card add-card">
+        <h3>Add a budget</h3>
+        <mat-form-field appearance="outline" subscriptSizing="dynamic" class="full-width">
+          <mat-label>Category</mat-label>
+          <mat-select [(ngModel)]="newCategoryId">
+            @for (c of availableCategories; track c.id) {
+              <mat-option [value]="c.id">{{ c.name }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" subscriptSizing="dynamic" class="full-width">
+          <mat-label>Monthly limit</mat-label>
+          <input matInput type="number" step="0.01" [(ngModel)]="newLimitAmount" />
+        </mat-form-field>
+        <button mat-flat-button color="primary" (click)="addBudget()" [disabled]="!newCategoryId || !newLimitAmount">
+          <mat-icon>add</mat-icon>
+          Add budget
+        </button>
+      </mat-card>
+    </div>
+
+    @if (!budgets().length) {
+      <p class="empty">No budgets set for this month yet — add one on the right.</p>
+    }
+  }
+</div>

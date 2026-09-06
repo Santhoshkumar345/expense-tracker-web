@@ -8,18 +8,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 1rem;
 
   h1 {
     margin: 0;
   }
-}
-
-.header-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
 
   button {
     display: inline-flex;
@@ -45,10 +37,6 @@
   padding: 3rem;
 }
 
-.table-scroll {
-  overflow-x: auto;
-}
-
 .full-width {
   width: 100%;
 }
@@ -56,16 +44,6 @@
 .category-chip {
   color: white;
   font-size: 0.75rem;
-}
-
-.tag-pill {
-  display: inline-block;
-  background: var(--mat-sys-secondary-container);
-  color: var(--mat-sys-on-secondary-container);
-  border-radius: 999px;
-  padding: 0.1rem 0.55rem;
-  font-size: 0.7rem;
-  margin: 0.1rem 0.2rem 0.1rem 0;
 }
 
 td.income {

@@ -44,11 +44,11 @@
   }
 
   &.income .value {
-    color: #22c55e;
+    color: var(--app-income);
   }
 
   &.expense .value {
-    color: #ef4444;
+    color: var(--app-expense);
   }
 }
 
@@ -61,11 +61,11 @@
 }
 
 td.positive {
-  color: #22c55e;
+  color: var(--app-income);
 }
 
 td.negative {
-  color: #ef4444;
+  color: var(--app-expense);
 }
 
 .empty {

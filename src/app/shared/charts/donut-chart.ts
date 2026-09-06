@@ -1,5 +1,18 @@
-import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Input,
+  OnChanges,
+  OnDestroy,
+  SimpleChanges,
+  ViewChild,
+  effect,
+  inject,
+} from '@angular/core';
 import { Chart } from 'chart.js/auto';
+import { ThemeService } from '../../core/theme/theme.service';
+import { readChartPalette } from './chart-theme';
 
 export interface DonutChartSlice {
   label: string;
@@ -25,7 +38,15 @@ export class DonutChart implements AfterViewInit, OnChanges, OnDestroy {
   @Input() slices: DonutChartSlice[] = [];
   @ViewChild('canvas') canvasRef!: ElementRef<HTMLCanvasElement>;
 
+  private readonly theme = inject(ThemeService);
   private chart?: Chart;
+
+  constructor() {
+    effect(() => {
+      this.theme.isDark();
+      if (this.canvasRef) this.render();
+    });
+  }
 
   ngAfterViewInit(): void {
     this.render();
@@ -42,6 +63,7 @@ export class DonutChart implements AfterViewInit, OnChanges, OnDestroy {
   }
 
   private render(): void {
+    const palette = readChartPalette();
     this.chart?.destroy();
     this.chart = new Chart(this.canvasRef.nativeElement, {
       type: 'doughnut',
@@ -59,7 +81,7 @@ export class DonutChart implements AfterViewInit, OnChanges, OnDestroy {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: { position: 'right' },
+          legend: { position: 'right', labels: { color: palette.onSurface } },
         },
       },
     });

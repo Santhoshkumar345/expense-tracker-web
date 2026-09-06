@@ -1,7 +1,9 @@
 <mat-sidenav-container class="shell">
   <mat-sidenav mode="side" opened class="sidenav">
     <div class="brand">
-      <mat-icon>account_balance_wallet</mat-icon>
+      <div class="brand-icon">
+        <mat-icon>account_balance_wallet</mat-icon>
+      </div>
       <span>Expense Tracker</span>
     </div>
     <mat-nav-list>
@@ -15,8 +17,15 @@
   </mat-sidenav>
 
   <mat-sidenav-content>
-    <mat-toolbar color="primary" class="toolbar">
+    <mat-toolbar class="toolbar">
       <span class="spacer"></span>
+      <button
+        mat-icon-button
+        (click)="theme.toggle()"
+        [matTooltip]="theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
+      >
+        <mat-icon>{{ theme.isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+      </button>
       <span class="user">{{ auth.displayName() }}</span>
       <button mat-icon-button (click)="logout()" aria-label="Logout" title="Logout">
         <mat-icon>logout</mat-icon>
