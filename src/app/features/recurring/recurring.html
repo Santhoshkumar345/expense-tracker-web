@@ -10,6 +10,7 @@
   @if (loading()) {
     <div class="loading"><mat-spinner></mat-spinner></div>
   } @else {
+    <div class="table-scroll">
     <table mat-table [dataSource]="items()" class="mat-elevation-z1 full-width">
       <ng-container matColumnDef="category">
         <th mat-header-cell *matHeaderCellDef>Category</th>
@@ -59,6 +60,7 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
+    </div>
 
     @if (!items().length) {
       <p class="empty">No recurring transactions yet — add rent, subscriptions, or your salary to automate the ledger.</p>

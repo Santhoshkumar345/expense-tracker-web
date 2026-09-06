@@ -1,5 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { map } from 'rxjs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
@@ -9,6 +12,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { AuthService } from '../../core/auth/auth.service';
 import { ThemeService } from '../../core/theme/theme.service';
 import { RecurringTransactionService } from '../../core/services/recurring-transaction.service';
+
+const MOBILE_BREAKPOINT = '(max-width: 768px)';
 
 @Component({
   selector: 'app-shell',
@@ -31,6 +36,14 @@ export class Shell {
   readonly auth = inject(AuthService);
   readonly theme = inject(ThemeService);
   private readonly recurringService = inject(RecurringTransactionService);
+  private readonly breakpointObserver = inject(BreakpointObserver);
+
+  readonly isMobile = toSignal(
+    this.breakpointObserver.observe(MOBILE_BREAKPOINT).pipe(map((result) => result.matches)),
+    { initialValue: this.breakpointObserver.isMatched(MOBILE_BREAKPOINT) },
+  );
+
+  readonly sidenavOpened = signal(!this.isMobile());
 
   readonly navItems = [
     { path: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
@@ -44,6 +57,18 @@ export class Shell {
 
   constructor() {
     this.recurringService.materialize().subscribe();
+
+    effect(() => {
+      this.sidenavOpened.set(!this.isMobile());
+    });
+  }
+
+  toggleSidenav(): void {
+    this.sidenavOpened.update((open) => !open);
+  }
+
+  onNavClicked(): void {
+    if (this.isMobile()) this.sidenavOpened.set(false);
   }
 
   logout(): void {

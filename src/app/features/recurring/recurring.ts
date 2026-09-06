@@ -79,6 +79,7 @@ export class Recurring implements OnInit {
   private openDialog(item: RecurringTransaction | null): void {
     const ref = this.dialog.open<RecurringDialog, RecurringDialogData, RecurringTransactionCreate>(RecurringDialog, {
       width: '440px',
+      maxWidth: '95vw',
       data: { categories: this.categories(), recurring: item },
     });
 

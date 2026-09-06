@@ -41,6 +41,7 @@
       <app-trend-chart [points]="points()"></app-trend-chart>
     </mat-card>
 
+    <div class="table-scroll">
     <table mat-table [dataSource]="points()" class="mat-elevation-z1 full-width">
       <ng-container matColumnDef="periodLabel">
         <th mat-header-cell *matHeaderCellDef>Period</th>
@@ -64,6 +65,7 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
+    </div>
 
     @if (!points().length) {
       <p class="empty">No transactions in this range.</p>

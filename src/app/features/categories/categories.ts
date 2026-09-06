@@ -54,6 +54,7 @@ export class Categories implements OnInit {
   addCategory(defaultType: 'Income' | 'Expense'): void {
     const ref = this.dialog.open<CategoryDialog, CategoryDialogData, CategoryCreate>(CategoryDialog, {
       width: '380px',
+      maxWidth: '95vw',
       data: { category: null, defaultType },
     });
     ref.afterClosed().subscribe((result) => {
@@ -65,6 +66,7 @@ export class Categories implements OnInit {
   editCategory(category: Category): void {
     const ref = this.dialog.open<CategoryDialog, CategoryDialogData, CategoryCreate>(CategoryDialog, {
       width: '380px',
+      maxWidth: '95vw',
       data: { category, defaultType: category.type },
     });
     ref.afterClosed().subscribe((result) => {

@@ -148,6 +148,7 @@ export class Ledger implements OnInit {
   private openDialog(transaction: Transaction | null): void {
     const ref = this.dialog.open<TransactionDialog, TransactionDialogData, TransactionCreate>(TransactionDialog, {
       width: '420px',
+      maxWidth: '95vw',
       data: { categories: this.categories(), transaction },
     });
 

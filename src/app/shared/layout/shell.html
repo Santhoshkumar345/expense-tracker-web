@@ -1,5 +1,5 @@
 <mat-sidenav-container class="shell">
-  <mat-sidenav mode="side" opened class="sidenav">
+  <mat-sidenav [mode]="isMobile() ? 'over' : 'side'" [opened]="sidenavOpened()" (openedChange)="sidenavOpened.set($event)" class="sidenav">
     <div class="brand">
       <div class="brand-icon">
         <mat-icon>account_balance_wallet</mat-icon>
@@ -8,7 +8,7 @@
     </div>
     <mat-nav-list>
       @for (item of navItems; track item.path) {
-        <a mat-list-item [routerLink]="item.path" routerLinkActive="active-link">
+        <a mat-list-item [routerLink]="item.path" routerLinkActive="active-link" (click)="onNavClicked()">
           <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
           <span matListItemTitle>{{ item.label }}</span>
         </a>
@@ -18,6 +18,11 @@
 
   <mat-sidenav-content>
     <mat-toolbar class="toolbar">
+      @if (isMobile()) {
+        <button mat-icon-button (click)="toggleSidenav()" aria-label="Toggle menu">
+          <mat-icon>menu</mat-icon>
+        </button>
+      }
       <span class="spacer"></span>
       <button
         mat-icon-button

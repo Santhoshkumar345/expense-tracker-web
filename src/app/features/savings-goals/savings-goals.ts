@@ -70,6 +70,7 @@ export class SavingsGoals implements OnInit {
   private openDialog(goal: SavingsGoal | null): void {
     const ref = this.dialog.open<GoalDialog, GoalDialogData, SavingsGoalCreate>(GoalDialog, {
       width: '380px',
+      maxWidth: '95vw',
       data: { goal },
     });
 
